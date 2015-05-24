@@ -1,6 +1,6 @@
 *.class
 *.log
-
+sublime.sublime*
 # sbt specific
 .cache
 .history
