@@ -163,6 +163,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   } 
 
 
+
   /**
    * The following methods are already implemented
    */
