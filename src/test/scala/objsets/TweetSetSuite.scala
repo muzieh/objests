@@ -32,6 +32,18 @@ class TweetSetSuite extends FunSuite {
     }
   }
 
+  test("isEmpty: on empty set") {
+    new TestSets {
+      assert((new Empty).isEmpty === true)
+    }
+  }
+
+  test("isEmpty: on non empty set") {
+    new TestSets {
+      assert(set2.isEmpty === false)
+    }
+  }
+
   test("filter: a on set5") {
     new TestSets {
       assert(size(set5.filter(tw => tw.user == "a")) === 1)
@@ -91,6 +103,12 @@ class TweetSetSuite extends FunSuite {
     }
   }
 
+  test("descending: empty set") {
+    new TestSets {
+      val trends = (new Empty()).descendingByRetweet
+      assert(trends.isEmpty)
+    }
+  }
 
 
   test("descending: set5") {

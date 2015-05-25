@@ -36,6 +36,7 @@ class Tweet(val user: String, val text: String, val retweets: Int) {
  */
 abstract class TweetSet {
 
+  def isEmpty: Boolean
   /**
    * This method takes a predicate and returns a subset of all the elements
    * in the original set for which the predicate is true.
@@ -69,8 +70,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def mostRetweeted: Tweet
-
+  def mostRetweeted: Tweet 
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
    * in descending order. In other words, the head of the resulting list should
@@ -113,6 +113,7 @@ abstract class TweetSet {
 
 class Empty extends TweetSet {
 
+  def isEmpty: Boolean = true
 
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
 
@@ -134,6 +135,7 @@ class Empty extends TweetSet {
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
+  def isEmpty: Boolean  = false
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
     if(p(elem)) right filterAcc(p, left filterAcc(p, acc incl elem))
     else right filterAcc(p, left filterAcc(p, acc))
@@ -144,22 +146,22 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     
   }
 
-  def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList = {
+    val most = mostRetweeted
+    new Cons(most, remove(most).descendingByRetweet)
+  } 
+
 
   def mostRetweeted: Tweet = {
-    def maxFromSubtree: Tweet = {
-      val maxL = left.mostRetweeted
-      val maxR = right.mostRetweeted
-      if (maxL == null) maxR
-      else if (maxR == null) maxL
-      else if (maxL.retweets > maxR.retweets) maxL
-      else maxR
-    }
+    def moreRetweets(elem1: Tweet, elem2:Tweet) = 
+      if (elem1.retweets > elem2.retweets) elem1 else elem2
 
-    if (maxFromSubtree == null || maxFromSubtree.retweets < elem.retweets) elem
-    else maxFromSubtree
-       
+    if (left.isEmpty && right.isEmpty) elem
+    else if (left.isEmpty) moreRetweets(elem, right.mostRetweeted) 
+    else moreRetweets(elem, left.mostRetweeted)
   } 
+
+
   /**
    * The following methods are already implemented
    */
